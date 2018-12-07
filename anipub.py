@@ -12,10 +12,6 @@ import aiohttp
 import discord
 from discord.ext import commands
 
-os.environ['TOKEN'] = 'NTE5ODUxMjA0NDQ1MDc3NTA0.DulU3w.s9IBLJOo8GKC3tfG5s7kqevT6Cs'
-os.environ['PREFIX'] = 'anipub!'
-os.environ['ACTIVITY'] = 'streaming'
-
 token = os.environ['TOKEN']
 modules = ['cogs.owner', 'cogs.basic', 'cogs.imaging']
 prefix = commands.when_mentioned_or(os.environ['PREFIX'])
