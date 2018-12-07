@@ -3,3 +3,4 @@ psutil
 speedtest-cli
 git+https://github.com/jmoiron/humanize
 requests
+pillow
