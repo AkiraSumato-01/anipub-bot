@@ -12,67 +12,32 @@ class Basic(object):
     @commands.command(name='help', aliases=['commands', 'cmds'])
     async def thelp(self, ctx, *, command: str = None):
         data = await HelpSetup(ctx, self.bot, command)
-        await ctx.send(embed=data)
-    
-    @commands.command(name='set_first')
-    @commands.has_permissions(manage_guild=True)
-    async def set_first(self, ctx, *, name: str):
-        if ctx.author.id not in [347432332208373760, 297421244402368522]:
-            return False
-        data = json.load(io.open('config.json', 'r', encoding='utf-8-sig'))
-        data['name_first'] = name
-        json.dump(data, io.open('config.json', 'w', encoding='utf-8-sig'), indent=2)
-        await ctx.send(':ok_hand:')
-    
-    @commands.command(name='set_second')
-    @commands.has_permissions(manage_guild=True)
-    async def set_second(self, ctx, *, name: str):
-        if ctx.author.id not in [347432332208373760, 297421244402368522]:
-            return False
-        data = json.load(io.open('config.json', 'r', encoding='utf-8-sig'))
-        data['name_second'] = name
-        json.dump(data, io.open('config.json', 'w', encoding='utf-8-sig'), indent=2)
-        await ctx.send(':ok_hand:')
-    
-    @commands.command(name='set_three')
-    @commands.has_permissions(manage_guild=True)
-    async def set_three(self, ctx, *, name: str):
-        if ctx.author.id not in [347432332208373760, 297421244402368522]:
-            return False
-        data = json.load(io.open('config.json', 'r', encoding='utf-8-sig'))
-        data['name_three'] = name
-        json.dump(data, io.open('config.json', 'w', encoding='utf-8-sig'), indent=2)
-        await ctx.send(':ok_hand:')
+        await ctx.send(embed=data)  
 
-    @commands.command(name='set_four')
-    @commands.has_permissions(manage_guild=True)
-    async def set_three(self, ctx, *, name: str):
-        if ctx.author.id not in [347432332208373760, 297421244402368522]:
-            return False
-        data = json.load(io.open('config.json', 'r', encoding='utf-8-sig'))
-        data['name_three'] = name
-        json.dump(data, io.open('config.json', 'w', encoding='utf-8-sig'), indent=2)
-        await ctx.send(':ok_hand:')
+    def manage_embed(self, member):
+        embed = discord.Embed(title='Новый участник прибыл!',
+                              description=f'**Привет, {member.mention}, добро пожаловать на {member.guild.name}!**',
+                              color=0x59C7FF)
+
+        embed.set_author(name=member.name, icon_url=member.avatar_url)
+        embed.set_footer(text=f'Приветствуем на сервере {member.guild.name}!',
+                         icon_url=member.guild.icon_url)
+        return embed
     
-    @commands.command(name='set_guild')
+    async def on_member_join(self, member):
+        guild = discord.utils.get(self.bot.guilds, id=327110418457690112)
+        channel = discord.utils.get(guild.text_channels, id=431879758347894815)
+
+        await channel.send(embed=self.manage_embed(member))
+
+    @commands.command(name='welcome')
     @commands.has_permissions(manage_guild=True)
-    async def set_guild(self, ctx, *, id: int):
-        if ctx.author.id not in [347432332208373760, 297421244402368522]:
-            return False
-        data = json.load(io.open('config.json', 'r', encoding='utf-8-sig'))
-        data['guild_id'] = id
-        json.dump(data, io.open('config.json', 'w', encoding='utf-8-sig'), indent=2)
-        await ctx.send(':ok_hand:')
+    async def welcome(self, ctx):
+        await ctx.send(embed=self.manage_embed(ctx.author))
     
-    @commands.command(name='set_sleeping')
-    @commands.has_permissions(manage_guild=True)
-    async def set_awaiting(self, ctx, *, time: int):
-        if ctx.author.id not in [347432332208373760, 297421244402368522]:
-            return False
-        data = json.load(io.open('config.json', 'r', encoding='utf-8-sig'))
-        data['sleep'] = time
-        json.dump(data, io.open('config.json', 'w', encoding='utf-8-sig'), indent=2)
-        await ctx.send(':ok_hand:')
+    async def on_message(self, m):
+        if m.content.lower() == 'привет':
+            await m.channel.send(f'***{m.author.mention}, приветствую тебя на сервере {m.channel.guild.name}!***')
 
 def setup(bot):
     bot.add_cog(Basic(bot))

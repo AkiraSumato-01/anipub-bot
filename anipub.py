@@ -8,6 +8,7 @@ import os
 import sys
 from datetime import datetime
 
+import aiohttp
 import discord
 from discord.ext import commands
 
@@ -16,7 +17,7 @@ os.environ['PREFIX'] = 'anipub!'
 os.environ['ACTIVITY'] = 'streaming'
 
 token = os.environ['TOKEN']
-modules = ['cogs.owner', 'cogs.basic']
+modules = ['cogs.owner', 'cogs.basic', 'cogs.imaging']
 prefix = commands.when_mentioned_or(os.environ['PREFIX'])
 
 class AniPub(commands.Bot):
@@ -39,30 +40,10 @@ class AniPub(commands.Bot):
     async def on_ready(self):
         print(f'<?> Подключение к {self.user} успешно.')
         await self.launch_session()
-        await self.change_presence(activity=discord.Game(name='ANIPUB'))
-
-        async def name_change():
-            while not self.is_closed():
-                data = json.load(io.open('config.json', 'r', encoding='utf-8-sig'))
-                server = discord.utils.get(self.guilds, id=data['guild_id'])
-                awaiting = data['sleep']
-
-                print('Цикл выполняется..')
-
-                await server.edit(name=data['name_first'])
-                print('1')
-                await asyncio.sleep(awaiting)
-                await server.edit(name=data['name_second'])
-                print('2')
-                await asyncio.sleep(awaiting)
-                await server.edit(name=data['name_three'])
-                print('3')
-
-                await asyncio.sleep(awaiting)
-
-        await self.loop.create_task(name_change())
+        await self.change_presence(activity=discord.Streaming(name='ANIPUB!', url='https://www.twitch.tv/%none%'))
 
     async def launch_session(self):
+        self.session = aiohttp.ClientSession(loop=self.loop)
         self.owner = (await self.application_info()).owner
 
 if __name__ == '__main__':
