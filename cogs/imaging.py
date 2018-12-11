@@ -55,7 +55,7 @@ class Imaging(object):
         __                                            __
         Например:
         ```
-        anipub!memegen Вот такие пироги
+        n!memegen Вот такие пироги
         ```
         """
         string_list = text.split('%')
@@ -87,31 +87,6 @@ class Imaging(object):
         await ctx.send(file=discord.File(fp=f'meme_{ctx.author.id}.png'))
         await asyncio.sleep(1.5)
         os.remove(f'meme_{ctx.author.id}.png')
-
-    @commands.command(name='fliplr', aliases=['flip_left_right', 'fliprl'])
-    @commands.cooldown(1, 3, commands.BucketType.member)
-    async def filter_flipLR(self, ctx, member: discord.Member = None):
-        """Контур аватарки.
-
-        Аргументы:
-        `:member` - участник (**или** можно скинуть картинку в сообщении с командой)
-        __                                            __
-        Например:
-        ```
-        anipub!fliplr @Участник
-        ```
-        """
-
-        im = await self.get_image(ctx, member, 'flip')
-        if not im:
-            return False
-
-        im = im.transpose(Image.FLIP_LEFT_RIGHT)
-        im.save(f'flip_{ctx.author.id}.png')
-
-        await ctx.send(file=discord.File(fp=f'flip_{ctx.author.id}.png'))
-        asyncio.sleep(1.5)
-        os.remove(f'flip_{ctx.author.id}.png')
     
     @commands.command(name='filter')
     @commands.cooldown(1, 3, commands.BucketType.member)
@@ -124,13 +99,17 @@ class Imaging(object):
         __                                            __
         Например:
         ```
-        anipub!filter blur;detail @Участник
+        n!filter blur;detail @Участник
         ```
 
         Фильтры:
         ```ini
         contour, blur, detail, edge_enhance, edge_enhance_more, emboss, find_edges,
         sharpen, smooth, smooth_more
+        ```
+        Дополнительные фильтры:
+        ```ini
+        gray - сделать изображение серым
         ```
         """
 
@@ -157,8 +136,15 @@ class Imaging(object):
 
         for x in filters:
             try:
-                filter_ = available[x]
-                im = im.filter(filter_)
+                if x in ['fliprl', 'fliplr']:
+                    im = im.transpose(Image.FLIP_LEFT_RIGHT)
+                elif x in ['flipdu', 'flipud']:
+                    im = im.transpose(Image.FLIP_TOP_BOTTOM)
+                elif x == 'gray':
+                    im = im.convert('L')
+                else:
+                    filter_ = available[x]
+                    im = im.filter(filter_)
             except:
                 not_success.append(x)
         im.save(f'filter_{ctx.author.id}.png')
@@ -171,6 +157,80 @@ class Imaging(object):
 
         asyncio.sleep(1.5)
         os.remove(f'filter_{ctx.author.id}.png')
+    
+
+    @commands.command(name='trigger', aliases=['tr', 'triggered'])
+    @commands.cooldown(1, 3, commands.BucketType.member)
+    async def triggered(self, ctx, member: discord.Member = None):
+        """TRIGGERED
+
+        [!] Команда может быть выполнена лишь раз в 3 секунды.
+        [!] Еще в разработке. В ближайшее время будет доработана.
+
+        Аргументы:
+        `:member` - участник (если не указано, выбирается автор команды или вложенное к сообщению изображение)
+        __                                            __
+        Например:
+        ```
+        n!trigger
+        ```
+        """
+        im = await self.get_image(ctx, member, 'trigger')
+        if not im:
+            return False
+        im = im.resize((1024, 1024))
+
+        triggered = Image.open('triggered.png')
+        rd = Image.new('RGBA', im.size, (255, 0, 0))
+
+        try:
+            im = Image.blend(im, rd, 0.3)
+        except Exception as e:
+            await ctx.send(f':thinking:\n{type(e).__name__}: {e}')
+
+        im.paste(triggered, (0, 886))
+
+        im.save(f'trigger_{ctx.author.id}.png', 'PNG')
+        await ctx.send(file=discord.File(fp=f'trigger_{ctx.author.id}.png'))
+        os.remove(f'trigger_{ctx.author.id}.png')
+    
+    @commands.command(name='resize')
+    @commands.cooldown(1, 3, commands.BucketType.member)
+    async def resize(self, ctx, size: str, member: discord.Member = None):
+        """Изменить размер изображения.
+
+        [!] Команда может быть выполнена лишь раз в 3 секунды.
+
+        Аргументы:
+        `:member` - участник (если не указано, выбирается автор команды или вложенное к сообщению изображение)
+        __                                            __
+        Например:
+        ```
+        n!resize 64x64 @Участник
+        ```
+        """
+        im = await self.get_image(ctx, member, 'filter')
+        if not im:
+            return False
+
+        size = size.lower().split('x')
+        
+        if len(size) != 2:
+            return False
+        
+        for x in size:
+            if not x.isnumeric:
+                return await ctx.send(f':x: Неверно указан новый размер ({"x".join(size)})')
+            if int(x) > 2500:
+                return await ctx.send(f':x: Указанный размер слишком большой ({x} > 2500)')
+
+        X = int(size[0])
+        Y = int(size[1])
+        
+        im = im.resize((X, Y))
+        im.save(f'resize_{ctx.author.id}.png', 'PNG')
+        await ctx.send(file=discord.File(fp=f'resize_{ctx.author.id}.png'))
+        os.remove(f'resize_{ctx.author.id}.png')
 
 
 def setup(bot):
