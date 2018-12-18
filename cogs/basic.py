@@ -49,19 +49,19 @@ class Basic(object):
             except:
                 return await m.channel.send('А кого баним хоть? :thinking:')
 
+            try:
+                user = discord.utils.get(m.guild.members, mention=user).mention
+            except:
                 try:
-                    user = discord.utils.get(m.guild.members, mention=user).mention
+                    user = discord.utils.get(m.guild.members, id=user).mention
                 except:
                     try:
-                        user = discord.utils.get(m.guild.members, id=user).mention
+                        user = discord.utils.get(m.guild.members, name=user).mention
                     except:
-                        try:
-                            user = discord.utils.get(m.guild.members, name=user).mention
-                        except:
-                            pass
+                        pass
 
-                await m.channel.send(f'{m.author.mention} банит {user}'
-                    file=discord.File(fp='ban/' + random.choice(os.listdir('ban'))))
+            await m.channel.send(f'{m.author.mention} банит {user}'
+                file=discord.File(fp='ban/' + random.choice(os.listdir('ban'))))
 
 def setup(bot):
     bot.add_cog(Basic(bot))
