@@ -23,7 +23,7 @@ class Basic(object):
         embed.set_footer(text=f'Приветствуем на сервере {member.guild.name}!',
                          icon_url=member.guild.icon_url)
         return embed
-    
+
     async def on_member_join(self, member):
         guild = discord.utils.get(self.bot.guilds, id=327110418457690112)
         channel = discord.utils.get(guild.text_channels, id=431879758347894815)
@@ -38,6 +38,10 @@ class Basic(object):
     async def on_message(self, m):
         if m.content.lower() == 'привет':
             await m.channel.send(f'***{m.author.mention}, приветствую тебя на сервере {m.channel.guild.name}!***')
+        if m.content.lower() == 'пока':
+            await m.channel.send(f'***{m.author.mention}, пока. Спасибо за то, что вы с нами на {m.channel.guild.name}!***')
+        if m.content.lower().startswith('бан'):
+            await m.channel.send(file=discord.File(fp='BAN.png'))
 
 def setup(bot):
     bot.add_cog(Basic(bot))

@@ -12,7 +12,9 @@ from utils.MemeGenerator import make_meme
 from random import randint, choice
 
 class Imaging(object):
-    """Редактор изображений"""
+    description_ru = "Редактор изображений."
+    description_en = "Image editor."
+
     def __init__(self, bot):
         self.bot = bot
     
@@ -24,7 +26,7 @@ class Imaging(object):
         if not member:
             try:
                 attachment = ctx.message.attachments[0]
-                if attachment.filename.lower().endswith('png') or attachment.filename.lower().endswith('jpg') or attachment.filename.lower().endswith('jpeg') or attachment.filename.lower().endswith('gif'):
+                if attachment.filename.lower().endswith('png') or attachment.filename.lower().endswith('jpg') or attachment.filename.lower().endswith('jpeg'):
                     await attachment.save(f'{name}_{ctx.author.id}.png')
                 else:
                     await ctx.send(':x: Не могу работать с этим типом файла.')
@@ -46,25 +48,16 @@ class Imaging(object):
     @commands.command(name='memegen')
     @commands.cooldown(1, 3, commands.BucketType.member)
     async def memegen(self, ctx, *, text: commands.clean_content):
-        """Генератор мемов. *Сооруди свой топовый мем!*
+        """[RU] Соорудить собственный мем
+        [EN] Build your own meme"""
 
-        [!] Команда может быть выполнена лишь раз в 3 секунды.
-
-        Аргументы:
-        `:text` - текст (% - перенос вниз)
-        __                                            __
-        Например:
-        ```
-        n!memegen Вот такие пироги
-        ```
-        """
         string_list = text.split('%')
 
         templates = [f'templates/{x}' for x in os.listdir('templates/')]
 
         try:
             attachment = ctx.message.attachments[0]
-            if attachment.filename.lower().endswith('png') or attachment.filename.lower().endswith('jpg') or attachment.filename.lower().endswith('jpeg') or attachment.filename.lower().endswith('gif'):
+            if attachment.filename.lower().endswith('png') or attachment.filename.lower().endswith('jpg') or attachment.filename.lower().endswith('jpeg'):
                 await attachment.save(f'meme_{ctx.author.id}.png')
             else:
                 await ctx.send(':x: Не могу работать с этим типом файла.')
@@ -79,39 +72,30 @@ class Imaging(object):
                     topString='',
                     outputFilename='meme_' + str(ctx.author.id),
                     filename=fn)
+
         elif len(string_list) >= 2:
             make_meme(topString=string_list[0],
                     bottomString=string_list[1],
                     outputFilename='meme_' + str(ctx.author.id),
                     filename=fn)
+
         await ctx.send(file=discord.File(fp=f'meme_{ctx.author.id}.png'))
         await asyncio.sleep(1.5)
         os.remove(f'meme_{ctx.author.id}.png')
     
+    @commands.command(name='filter-list', aliases=['filters'])
+    async def filters(self, ctx):
+        """[RU] Доступные фильтры
+        [EN] Available filters"""
+
+        await ctx.send('contour, blur, detail, edge_enhance, edge_enhance_more, emboss, find_edges, '
+                       'sharpen, smooth, smooth_more, gray')
+    
     @commands.command(name='filter')
     @commands.cooldown(1, 3, commands.BucketType.member)
     async def filter_blur(self, ctx, filters: str, member: discord.Member = None):
-        """Размытие аватарки.
-
-        Аргументы:
-        `:filters` - фильтры (если несколько, разделять через `;`)
-        `:member` - участник (**или** можно скинуть картинку в сообщении с командой)
-        __                                            __
-        Например:
-        ```
-        n!filter blur;detail @Участник
-        ```
-
-        Фильтры:
-        ```ini
-        contour, blur, detail, edge_enhance, edge_enhance_more, emboss, find_edges,
-        sharpen, smooth, smooth_more
-        ```
-        Дополнительные фильтры:
-        ```ini
-        gray - сделать изображение серым
-        ```
-        """
+        """[RU] Применить фильтры к изображению
+        [EN] Apply filters to image"""
 
         filters = filters.split(';')
 
@@ -162,31 +146,21 @@ class Imaging(object):
     @commands.command(name='trigger', aliases=['tr', 'triggered'])
     @commands.cooldown(1, 3, commands.BucketType.member)
     async def triggered(self, ctx, member: discord.Member = None):
-        """TRIGGERED
+        """[RU] TRIGGERED
+        [EN] TRIGGERED"""
 
-        [!] Команда может быть выполнена лишь раз в 3 секунды.
-        [!] Еще в разработке. В ближайшее время будет доработана.
-
-        Аргументы:
-        `:member` - участник (если не указано, выбирается автор команды или вложенное к сообщению изображение)
-        __                                            __
-        Например:
-        ```
-        n!trigger
-        ```
-        """
         im = await self.get_image(ctx, member, 'trigger')
         if not im:
             return False
-        im = im.resize((1024, 1024))
+        im = im.resize((1024, 1024), Image.ANTIALIAS)
 
         triggered = Image.open('triggered.png')
-        rd = Image.new('RGBA', im.size, (255, 0, 0))
+        rd = Image.new('RGBA', (1024, 1024), (255, 0, 0))
 
         try:
             im = Image.blend(im, rd, 0.3)
         except Exception as e:
-            await ctx.send(f':thinking:\n{type(e).__name__}: {e}')
+            pass
 
         im.paste(triggered, (0, 886))
 
@@ -197,18 +171,9 @@ class Imaging(object):
     @commands.command(name='resize')
     @commands.cooldown(1, 3, commands.BucketType.member)
     async def resize(self, ctx, size: str, member: discord.Member = None):
-        """Изменить размер изображения.
+        """[RU] Изменить размер изображения
+        [EN] Resize image"""
 
-        [!] Команда может быть выполнена лишь раз в 3 секунды.
-
-        Аргументы:
-        `:member` - участник (если не указано, выбирается автор команды или вложенное к сообщению изображение)
-        __                                            __
-        Например:
-        ```
-        n!resize 64x64 @Участник
-        ```
-        """
         im = await self.get_image(ctx, member, 'filter')
         if not im:
             return False
@@ -216,7 +181,7 @@ class Imaging(object):
         size = size.lower().split('x')
         
         if len(size) != 2:
-            return False
+            return await ctx.send(f':x: Неверно указан новый размер ({"x".join(size)})')
         
         for x in size:
             if not x.isnumeric:
