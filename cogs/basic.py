@@ -44,7 +44,7 @@ class Basic(object):
             await m.channel.send(f'***{m.author.mention}, пока. Спасибо за то, что вы с нами на {m.channel.guild.name}!***')
         if m.content.lower().startswith('бан'):
             file = random.choice(os.listdir('ban'))
-            await m.channel.send(file=discord.File(fp=file))
+            await m.channel.send(file=discord.File(fp='ban/' + file))
 
 def setup(bot):
     bot.add_cog(Basic(bot))
