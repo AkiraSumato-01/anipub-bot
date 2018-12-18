@@ -42,7 +42,7 @@ class Basic(object):
             await m.channel.send(f'***{m.author.mention}, приветствую тебя на сервере {m.channel.guild.name}!***')
         if m.content.lower() == 'пока':
             await m.channel.send(f'***{m.author.mention}, пока. Спасибо за то, что вы с нами на {m.channel.guild.name}!***')
-        if m.content.lower().startswith('бан'):
+        if m.content.lower() == 'бан':
             file = random.choice(os.listdir('ban'))
             await m.channel.send(file=discord.File(fp='ban/' + file))
 
