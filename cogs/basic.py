@@ -2,6 +2,8 @@ import discord
 from discord.ext import commands
 import json
 import io
+import os
+import random
 
 from utils.HelpUtility import HelpSetup
 
@@ -41,7 +43,8 @@ class Basic(object):
         if m.content.lower() == 'пока':
             await m.channel.send(f'***{m.author.mention}, пока. Спасибо за то, что вы с нами на {m.channel.guild.name}!***')
         if m.content.lower().startswith('бан'):
-            await m.channel.send(file=discord.File(fp='BAN.png'))
+            file = random.choice(os.listdir('ban'))
+            await m.channel.send(file=discord.File(fp=file))
 
 def setup(bot):
     bot.add_cog(Basic(bot))
