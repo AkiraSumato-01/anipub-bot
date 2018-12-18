@@ -60,7 +60,7 @@ class Basic(object):
                     except:
                         pass
 
-            await m.channel.send(f'{m.author.mention} банит {user}'
+            await m.channel.send(f'{m.author.mention} банит {user}',
                 file=discord.File(fp='ban/' + random.choice(os.listdir('ban'))))
 
 def setup(bot):
