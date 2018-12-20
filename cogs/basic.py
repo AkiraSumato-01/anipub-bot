@@ -41,7 +41,7 @@ class Basic(object):
     @commands.command(name='say')
     @commands.has_permissions(manage_messages=True)
     @commands.bot_has_permissions(manage_messages=True)
-    async def say(self, ctx, *, text: commands.clean_content):
+    async def say(self, ctx, *, text: str):
         '''Отправка сообщения от моего имени.'''
         await ctx.message.delete()
         await ctx.send(text)
