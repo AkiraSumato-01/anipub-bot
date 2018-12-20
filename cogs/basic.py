@@ -13,8 +13,9 @@ class Basic(object):
 
     @commands.command(name='help', aliases=['commands', 'cmds'])
     async def thelp(self, ctx, *, command: str = None):
+        '''Справочник по командам.'''
         data = await HelpSetup(ctx, self.bot, command)
-        await ctx.send(embed=data)  
+        await ctx.send(embed=data)
 
     def manage_embed(self, member):
         embed = discord.Embed(title='Новый участник прибыл!',
@@ -32,12 +33,22 @@ class Basic(object):
 
         await channel.send(embed=self.manage_embed(member))
 
-    @commands.command(name='welcome')
+    @commands.command(name='view-welcome', aliases=['welcome'])
     @commands.has_permissions(manage_guild=True)
     async def welcome(self, ctx):
         await ctx.send(embed=self.manage_embed(ctx.author))
     
+    @commands.command(name='say')
+    @commands.has_permissions(manage_messages=True)
+    @commands.bot_has_permissions(manage_messages=True)
+    async def say(self, ctx, *, text: commands.clean_content):
+        '''Отправка сообщения от моего имени.'''
+        await ctx.message.delete()
+        await ctx.send(text)
+    
     async def on_message(self, m):
+        if m.author.bot:
+            return False
         if m.content.lower() == 'привет':
             await m.channel.send(f'***{m.author.mention}, приветствую тебя на сервере {m.channel.guild.name}!***')
         if m.content.lower() == 'пока':
@@ -47,7 +58,8 @@ class Basic(object):
                 user = m.content.lower().split(' ')[1]
 
             except:
-                return await m.channel.send('А кого баним хоть? :thinking:')
+                await m.channel.send(file=discord.File(fp='ban/' + random.choice(os.listdir('ban'))))
+                return False
 
             try:
                 user = discord.utils.get(m.guild.members, mention=user).mention

@@ -36,7 +36,7 @@ class AniPub(commands.Bot):
     async def on_ready(self):
         print(f'<?> Подключение к {self.user} успешно.')
         await self.launch_session()
-        await self.change_presence(activity=discord.Streaming(name='anipub!help', url='https://www.twitch.tv/%none%'))
+        await self.change_presence(activity=discord.Streaming(name=f'{os.environ['PREFIX']}!help', url='https://www.twitch.tv/%none%'))
 
     async def launch_session(self):
         self.session = aiohttp.ClientSession(loop=self.loop)
