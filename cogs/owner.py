@@ -17,10 +17,10 @@ import json
 from contextlib import redirect_stdout
 from random import randint
 
-from utils.NaomiHastebinPoster import *
-from utils.NaomiShellExecutor import *
+from utils.HastebinPoster import *
+from utils.ShellExecutor import *
 
-from utils.NaomiChecks import *
+from utils.Checks import *
 
 
 class OwnerCommands(object):
