@@ -4,3 +4,4 @@ speedtest-cli
 requests
 pillow
 git+https://github.com/jmoiron/humanize
+youtube_dl
