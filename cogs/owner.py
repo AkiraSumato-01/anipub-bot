@@ -32,7 +32,7 @@ class OwnerCommands(object):
 
 
     @commands.command(name='+update', hidden=True)
-    @owner()
+    @commands.is_owner()
     async def send_update(self, ctx, qreload: bool = True, *, message):
         """[RU] Оповестить участников нашего сервера об обновлении (и перезагрузить все модули)
         [EN] Notify our server members about the update (and reload all modules)
@@ -49,7 +49,7 @@ class OwnerCommands(object):
 
     @commands.command(name='owncleanup', hidden=True)
     @commands.guild_only()
-    @owner()
+    @commands.is_owner()
     @commands.bot_has_permissions(manage_messages=True)
     async def owner_cleanup(self, ctx, member: discord.Member, count: int):
         """[RU] Удалить сообщения конкретного участника (разработчик)
@@ -66,7 +66,7 @@ class OwnerCommands(object):
 
     
     @commands.command('block', hidden=True, aliases=['+blacklist', '+black'])
-    @owner()
+    @commands.is_owner()
     async def block_user(self, ctx, user: discord.Member):
         """[RU] Заблокировать юзера.
         [EN] Block user.
@@ -84,7 +84,7 @@ class OwnerCommands(object):
 
 
     @commands.command('unblock', hidden=True, aliases=['-blacklist', '-block'])
-    @owner()
+    @commands.is_owner()
     async def unblock_user(self, ctx, user: discord.Member):
         """[RU] Разблокировать юзера
         [EN] Unblock user
@@ -99,7 +99,7 @@ class OwnerCommands(object):
 
 
     @commands.command('allow', hidden=True, aliases=['+whitelist', '+white'])
-    @owner()
+    @commands.is_owner()
     async def whitelist_user(self, ctx, user: discord.Member):
         """[RU] Добавить в белый список
         [EN] Add to whitelist
@@ -111,7 +111,7 @@ class OwnerCommands(object):
 
 
     @commands.command('deny', hidden=True, aliases=['-whitelist', '-white'])
-    @owner()
+    @commands.is_owner()
     async def de_whitelist_user(self, ctx, user: discord.Member):
         """[RU] Убрать из белого списка
         [EN] Remove from a whitelist
@@ -126,7 +126,7 @@ class OwnerCommands(object):
 
 
     @commands.command('del-cog', hidden=True, aliases=['-cog'])
-    @owner()
+    @commands.is_owner()
     async def del_cog(self, ctx, path: str):
         """[RU] Удалить модуль
         [EN] Delete module
@@ -138,7 +138,7 @@ class OwnerCommands(object):
             await ctx.send(f'<:naomi_tick_no:525026037868789783> Не удалось >> `{path}``\n{type(e).__name__}: {e}')
 
     @commands.command('del-cmd', hidden=True, aliases=['-cmd'])
-    @owner()
+    @commands.is_owner()
     async def del_command(self, ctx, cmd: str):
         """[RU] Удалить команду
         [EN] Delete command
@@ -150,7 +150,7 @@ class OwnerCommands(object):
             await ctx.send(f'<:naomi_tick_no:525026037868789783> Не удалось >> `{cmd}``\n{type(e).__name__}: {e}')
 
     @commands.command(name='logout', hidden=True)
-    @owner()
+    @commands.is_owner()
     async def logout(self, ctx):
         """[RU] Деавторизовать меня от Discord
         [EN] Logout me from Discord
@@ -170,7 +170,7 @@ class OwnerCommands(object):
         await self.bot.logout()
 
     @commands.command(name='sysinfo', hidden=True)
-    @owner()
+    @commands.is_owner()
     async def sysinfo(self, ctx):
         """[RU] Системная информация
         [EN] System statistics
@@ -211,7 +211,7 @@ class OwnerCommands(object):
         await ctx.send(embed=embed)
 
     @commands.command(name='quit', aliases=['quitserver'], hidden=True)
-    @owner()
+    @commands.is_owner()
     async def quit_guild(self, ctx, guild: discord.Guild):
         """[RU] Отключить меня от сервера
         [EN] Disconnect me from a server
@@ -223,7 +223,7 @@ class OwnerCommands(object):
             await ctx.send(f'Возникла ошибка:\n```{traceback.format_exc()}```')
 
     @commands.command(name='ping', hidden=True)
-    @owner()
+    @commands.is_owner()
     async def ping(self, ctx):
         """[RU] Client & API latency
         [EN] Задержка API и клиента
@@ -234,7 +234,7 @@ class OwnerCommands(object):
         await resp.edit(content=f':ping_pong: Pong!\nЗадержка API: {1000 * diff.total_seconds():.1f}мс.\nЗадержка {self.bot.user.name}: {round(self.bot.latency * 1000)}мс')
 
     @commands.command(hidden=True, aliases=['r'])
-    @owner()
+    @commands.is_owner()
     async def restart(self, ctx):
         """[RU] Перезапуск
         [EN] Restart
@@ -244,7 +244,7 @@ class OwnerCommands(object):
         os.execl(sys.executable, sys.executable, * sys.argv)
 
     @commands.command(name='#exception', hidden=True)
-    @owner()
+    @commands.is_owner()
     async def exception(self, ctx):
         """[RU] Выдать исключение
         [EN] Raise an exception
@@ -252,7 +252,7 @@ class OwnerCommands(object):
         raise RuntimeError('Вызвано разработчиком.')
 
     @commands.command(name='load', hidden=True)
-    @owner()
+    @commands.is_owner()
     async def cog_load(self, ctx, *, cog: str):
         """[RU] Загрузить модуль
         [EN] Load module
@@ -266,7 +266,7 @@ class OwnerCommands(object):
             await ctx.send(f'**<:naomi_tick_yes:525026013663723540> `Модуль {cog} успешно загружен`**')
 
     @commands.command(name='unload', hidden=True)
-    @owner()
+    @commands.is_owner()
     async def cog_unload(self, ctx, *, cog: str):
         """[RU] Выгрузить модуль
         [EN] Unload module
@@ -288,7 +288,7 @@ class OwnerCommands(object):
             await channel.send(f'<:naomi_arrow_up:506078581227651098> Новый участник {member.mention} присоединился.\n◽ **Добро пожаловать на {member.guild.name}!**')
 
     @commands.command(name='usage', aliases=['cmd-usage', 'cmdusage'], hidden=True)
-    @owner()
+    @commands.is_owner()
     async def usage(self, ctx, command_name: commands.clean_content = None):
         """[RU] Кол-во использований команд
         [EN] Commands usage coung
@@ -314,7 +314,7 @@ class OwnerCommands(object):
         await ctx.send(embed=embed)
 
     @commands.command(name='shell', aliases=['sh', 'bash'], hidden=True)
-    @owner()
+    @commands.is_owner()
     async def shell(self, ctx, *, code: str):
         """[RU] Терминал Bash (теперь асинхронный!)
         [EN] Bash terminal (now async!)
@@ -360,7 +360,7 @@ class OwnerCommands(object):
             await ctx.message.remove_reaction(loading, self.bot.user)
 
     @commands.command(name='add-cog', hidden=True, aliases=['+cog'])
-    @owner()
+    @commands.is_owner()
     async def add_cog(self, ctx):
         """[RU] Добавить модуль
         [EN] Add module
@@ -391,7 +391,7 @@ class OwnerCommands(object):
             await ctx.message.delete()
 
     @commands.command(name='execute', aliases=['exec', 'eval', 'run'], hidden=True)
-    @owner()
+    @commands.is_owner()
     async def execute(self, ctx, *, code: str):
         """[RU] Интерпретатор Python
         [EN] Python interpreter
