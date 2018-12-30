@@ -53,6 +53,7 @@ class Basic(object):
             await m.channel.send(f'***{m.author.mention}, приветствую тебя на сервере {m.channel.guild.name}!***')
         if m.content.lower() == 'пока':
             await m.channel.send(f'***{m.author.mention}, пока. Спасибо за то, что вы с нами на {m.channel.guild.name}!***')
+
         if m.content.lower().split(' ')[0] == 'бан':
             try:
                 user = m.content.lower().split(' ')[1]
@@ -70,7 +71,7 @@ class Basic(object):
                     try:
                         user = discord.utils.get(m.guild.members, name=user).mention
                     except:
-                        pass
+                        user = 'себя'
 
             await m.channel.send(f'{m.author.mention} банит {user}',
                 file=discord.File(fp='ban/' + random.choice(os.listdir('ban'))))
