@@ -9,12 +9,13 @@ class Etc(object):
         self.bot = bot
 
     @commands.command('chkgm', aliases=['checkgame'])
-    @commands.has_permission(manage_roles=True)
+    @commands.has_permissions(manage_roles=True)
     async def chkgm(self, ctx):
         """Тупо проверка участников на игру в статусе"""
         r = bot.get_role(428649381659541507)
 
         i = 0
+        ni = 0
 
         for x in ctx.guild.members:
             if x.activity is not None:
@@ -24,11 +25,11 @@ class Etc(object):
                     try:
                         await x.add_roles(r)
                     except:
-                        pass
+                        ni += 1
                     else:
                         i += 1
 
-        await ctx.send(f':white_check_mark: Роль добавлена {i} участникам.')
+        await ctx.send(f':white_check_mark: Роль добавлена {i} участникам.\n••• Не удалось выдать роль {ni} участникам.')
 
 
 def setup(bot):
