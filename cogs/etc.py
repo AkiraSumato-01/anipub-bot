@@ -12,7 +12,7 @@ class Etc(object):
     @commands.has_permissions(manage_roles=True)
     async def chkgm(self, ctx):
         """Тупо проверка участников на игру в статусе"""
-        r = bot.get_role(428649381659541507)
+        r = self.bot.get_role(428649381659541507)
 
         i = 0
         ni = 0
