@@ -9,7 +9,7 @@ class Etc(object):
         self.bot = bot
 
     @commands.command('chkgm', aliases=['checkgame'])
-    @commands.has_permissions(manage_roles=True)
+    @commands.has_permissions(administrator=True)
     async def chkgm(self, ctx):
         """Тупо проверка участников на игру в статусе"""
         r = discord.utils.get(ctx.guild.roles, id=428649381659541507)
