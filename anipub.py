@@ -13,7 +13,8 @@ import discord
 from discord.ext import commands
 
 token = os.environ['TOKEN']
-modules = ['cogs.owner', 'cogs.basic', 'cogs.imaging', 'cogs.ffmpeg_music']
+modules = ['cogs.owner', 'cogs.basic', 'cogs.imaging', 'cogs.ffmpeg_music', 'cogs.etc']
+
 prefix = commands.when_mentioned_or('r!')
 
 class AniPub(commands.Bot):
@@ -36,7 +37,7 @@ class AniPub(commands.Bot):
     async def on_ready(self):
         print(f'<?> Подключение к {self.user} успешно.')
         await self.launch_session()
-        await self.change_presence(activity=discord.Streaming(name='r!help', url='https://www.twitch.tv/%none%'))
+        await self.change_presence(activity=discord.Streaming(name='r!help | Hello :wave:', url='https://www.twitch.tv/%none%'))
 
     async def launch_session(self):
         self.session = aiohttp.ClientSession(loop=self.loop)
