@@ -21,8 +21,12 @@ class Etc(commands.Cog):
                 if x.activity.name == 'Spotify':
                     continue
                 else:
-                    await x.add_roles(r)
-                    i += 1
+                    try:
+                        await x.add_roles(r)
+                    except:
+                        pass
+                    else:
+                        i += 1
 
         await ctx.send(f':white_check_mark: Роль добавлена {i} участникам.')
 
