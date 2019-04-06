@@ -18,7 +18,7 @@ class Etc(object):
         ni = 0
 
         for x in ctx.guild.members:
-            if x.activity is not None:
+            if x.activity is not None and not x.bot:
                 if x.activity.name == 'Spotify':
                     continue
                 else:
